@@ -1,5 +1,5 @@
-const express = require('express');
 const axios = require('axios');
+const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -27,6 +27,8 @@ public_users.post("/register", (req,res) => {
     message:"User successfully registered. Now you can login"
   });
 });
+
+const axios = require('axios');
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
@@ -79,46 +81,48 @@ public_users.get('/review/:isbn',function (req, res) {
   return res.status(200).json(books[isbn].reviews);
 });
 
-// Task 11 - Get all books using async/await
+module.exports.general = public_users;
+// Task 10 - Get all books using async/await
 public_users.get('/async/books', async (req, res) => {
   try {
     const response = await axios.get('http://localhost:8000/');
     return res.status(200).json(response.data);
-  } catch (err) {
-    return res.status(500).json(err.message);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 });
 
-// Task 12 - Search by ISBN using Promises
+// Task 11 - Search by ISBN using Promises
 public_users.get('/promise/isbn/:isbn', (req, res) => {
   const isbn = req.params.isbn;
 
   axios.get(`http://localhost:8000/isbn/${isbn}`)
-    .then(response => res.status(200).json(response.data))
-    .catch(err => res.status(500).json(err.message));
+    .then(response => {
+      res.status(200).json(response.data);
+    })
+    .catch(error => {
+      res.status(500).json({ message: error.message });
+    });
 });
 
-// Task 13 - Search by Author using async/await
+// Task 12 - Search by Author using Async/Await
 public_users.get('/async/author/:author', async (req, res) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8000/author/${req.params.author}`
-    );
+    const author = req.params.author;
+    const response = await axios.get(`http://localhost:8000/author/${author}`);
     return res.status(200).json(response.data);
-  } catch (err) {
-    return res.status(500).json(err.message);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 });
 
-// Task 14 - Search by Title using async/await
+// Task 13 - Search by Title using Async/Await
 public_users.get('/async/title/:title', async (req, res) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8000/title/${req.params.title}`
-    );
+    const title = req.params.title;
+    const response = await axios.get(`http://localhost:8000/title/${title}`);
     return res.status(200).json(response.data);
-  } catch (err) {
-    return res.status(500).json(err.message);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 });
-module.exports.general = public_users;
